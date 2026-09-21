@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gerenciamento de Chamados de TI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema de Gerenciamento de Chamados de TI</h1>
+            <p>Cadastre, liste e pesquise chamados de suporte técnico</p>
+        </header>
+
+        <nav class="menu">
+            <button id="btn-novo" class="ativo" onclick="mostrarSecao('novo', this)">Novo Chamado</button>
+            <button id="btn-lista" onclick="mostrarSecao('lista', this)">Lista de Chamados</button>
+            <button id="btn-pesquisa" onclick="mostrarSecao('pesquisa', this)">Pesquisar</button>
+        </nav>
+
+        <div class="conteudo">
+            <!-- Seção Novo Chamado -->
+            <section id="secao-novo" class="secao ativa">
+                <h2>Novo Chamado</h2>
+                <div class="form-group">
+                    <label for="titulo">Título *</label>
+                    <input type="text" id="titulo" placeholder="Ex: Meu computador não liga">
+                </div>
+                <div class="form-group">
+                    <label for="descricao">Descrição *</label>
+                    <textarea id="descricao" placeholder="Descreva detalhadamente seu problema"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="prioridade">Prioridade *</label>
+                    <select id="prioridade">
+                        <option value="">Selecione...</option>
+                        <option value="alta">Alta</option>
+                        <option value="media">Média</option>
+                        <option value="baixa">Baixa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoria *</label>
+                    <select id="categoria">
+                        <option value="">Selecione...</option>
+                        <option value="hardware">Hardware</option>
+                        <option value="software">Software</option>
+                        <option value="rede">Rede</option>
+                        <option value="e-mail">E-mail</option>
+                        <option value="impressora">Impressora</option>
+                        <option value="acesso">Acesso</option>
+                    </select>
+                </div>
+                <button class="btn-enviar" onclick="cadastrarChamado()">Cadastrar Chamado</button>
+                <div id="mensagem-cadastro" class="mensagem"></div>
+            </section>
+
+            <!-- Seção Lista -->
+            <section id="secao-lista" class="secao">
+                <h2>Lista de Chamados</h2>
+                <div id="lista-chamados"></div>
+            </section>
+
+            <!-- Seção Pesquisa -->
+            <section id="secao-pesquisa" class="secao">
+                <h2>Pesquisar Chamado</h2>
+                <div class="busca-box">
+                    <input type="text" id="termo-busca" placeholder="Digite o termo de busca (título ou descrição)">
+                    <button onclick="pesquisarChamado()">Buscar</button>
+                </div>
+                <div id="resultado-busca"></div>
+            </section>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
