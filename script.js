@@ -16,6 +16,21 @@ function mostrarSecao(secao, botao) {
     }
 }
 
+// Mostrar ou esconder o campo de categoria personalizada
+function verificarCategoriaOutro() {
+    const categoria = document.getElementById('categoria').value;
+    const grupoOutro = document.getElementById('grupo-categoria-outro');
+    const inputOutro = document.getElementById('categoria-outro');
+
+    if (categoria === 'outro') {
+        grupoOutro.style.display = 'block';
+        inputOutro.focus();
+    } else {
+        grupoOutro.style.display = 'none';
+        inputOutro.value = '';
+    }
+}
+
 // Formatar data no padrão dd/mm/aaaa hh:mm
 function formatarData() {
     const agora = new Date();
@@ -42,7 +57,8 @@ function cadastrarChamado() {
     const titulo = document.getElementById('titulo').value.trim();
     const descricao = document.getElementById('descricao').value.trim();
     const prioridade = document.getElementById('prioridade').value;
-    const categoria = document.getElementById('categoria').value;
+    const categoriaSelecionada = document.getElementById('categoria').value;
+    const categoriaOutro = document.getElementById('categoria-outro').value.trim();
     const msg = document.getElementById('mensagem-cadastro');
 
     // Validações
@@ -58,16 +74,32 @@ function cadastrarChamado() {
         exibirMensagem(msg, 'Selecione uma prioridade válida.', 'erro');
         return;
     }
-    if (!categoria) {
+    if (!categoriaSelecionada) {
         exibirMensagem(msg, 'Selecione uma categoria válida.', 'erro');
         return;
+    }
+    if (categoriaSelecionada === 'outro' && !categoriaOutro) {
+        exibirMensagem(msg, 'Digite a categoria personalizada.', 'erro');
+        return;
+    }
+
+    // Define a categoria final
+    let categoriaFinal;
+    let categoriaEhOutro = false;
+
+    if (categoriaSelecionada === 'outro') {
+        categoriaFinal = categoriaOutro;
+        categoriaEhOutro = true;
+    } else {
+        categoriaFinal = categoriaSelecionada;
     }
 
     const chamadoInfo = {
         titulo: titulo,
         descricao: descricao,
         prioridade: prioridade,
-        categoria: categoria,
+        categoria: categoriaFinal,
+        categoriaEhOutro: categoriaEhOutro,
         status: 'Aberto',
         data_abertura: formatarData()
     };
@@ -80,10 +112,15 @@ function cadastrarChamado() {
     document.getElementById('descricao').value = '';
     document.getElementById('prioridade').value = '';
     document.getElementById('categoria').value = '';
+    document.getElementById('categoria-outro').value = '';
+    document.getElementById('grupo-categoria-outro').style.display = 'none';
 }
 
 // Criar HTML de um chamado
 function criarHtmlChamado(chamado, index) {
+    const classeCategoria = chamado.categoriaEhOutro ? 'categoria-outro' : 'categoria';
+    const sufixoOutro = chamado.categoriaEhOutro ? ' (outro)' : '';
+
     return `
         <div class="chamado ${chamado.prioridade}">
             <h3>${index}. ${escapeHtml(chamado.titulo)}</h3>
@@ -91,7 +128,7 @@ function criarHtmlChamado(chamado, index) {
             <p><strong>Data de abertura:</strong> ${chamado.data_abertura}</p>
             <div class="tags">
                 <span class="tag prioridade-${chamado.prioridade}">${chamado.prioridade}</span>
-                <span class="tag categoria">${chamado.categoria}</span>
+                <span class="tag ${classeCategoria}">${escapeHtml(chamado.categoria)}${sufixoOutro}</span>
                 <span class="tag status">${chamado.status}</span>
             </div>
         </div>
@@ -129,7 +166,8 @@ function pesquisarChamado() {
 
     const encontrados = chamados.filter(c =>
         c.titulo.toLowerCase().includes(termo) ||
-        c.descricao.toLowerCase().includes(termo)
+        c.descricao.toLowerCase().includes(termo) ||
+        c.categoria.toLowerCase().includes(termo)
     );
 
     if (encontrados.length === 0) {
@@ -151,8 +189,11 @@ document.getElementById('termo-busca').addEventListener('keypress', function (e)
 });
 
 // Permitir cadastro com Enter nos inputs (exceto textarea)
-['titulo', 'prioridade', 'categoria'].forEach(id => {
-    document.getElementById(id).addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') cadastrarChamado();
-    });
+['titulo', 'prioridade', 'categoria', 'categoria-outro'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+        el.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') cadastrarChamado();
+        });
+    }
 });
