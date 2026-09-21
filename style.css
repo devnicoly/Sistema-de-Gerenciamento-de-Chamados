@@ -97,6 +97,22 @@ header p {
     margin-bottom: 15px;
 }
 
+/* Animação suave do campo "Outro" ao aparecer */
+#grupo-categoria-outro {
+    animation: aparecer 0.25s ease;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .form-group label {
     display: block;
     margin-bottom: 6px;
@@ -261,6 +277,12 @@ header p {
 .tag.categoria {
     background: #e8eef7;
     color: #1e3c72;
+}
+
+/* Estilo próprio para categoria personalizada */
+.tag.categoria-outro {
+    background: #f4e8ff;
+    color: #6a1b9a;
 }
 
 .tag.status {
